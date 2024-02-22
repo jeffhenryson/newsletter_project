@@ -3,10 +3,12 @@ from langchain.adapters.openai import convert_openai_messages
 from langchain_openai import ChatOpenAI
 
 class CritiqueAgent:
+    
     def __init__(self):
         pass
 
     def critique(self, article: dict):
+        
         prompt = [{
             "role": "system",
             "content": "You are a newspaper writing critique. Your sole purpose is to provide short feedback on a written "
@@ -25,6 +27,7 @@ class CritiqueAgent:
 
         lc_messages = convert_openai_messages(prompt)
         response = ChatOpenAI(model='gpt-4', max_retries=1).invoke(lc_messages).content
+        
         if response == 'None':
             return {'critique': None}
         else:
@@ -33,5 +36,7 @@ class CritiqueAgent:
             return {'critique': response, 'message': None}
 
     def run(self, article: dict):
+        
         article.update(self.critique(article))
+        
         return article

@@ -4,7 +4,7 @@ from concurrent.futures import ThreadPoolExecutor
 from langgraph.graph import Graph
 
 # Import agent classes
-from .agents import SearchAgent, CuratorAgent, WriterAgent, DesignerAgent, EditorAgent, PublisherAgent, CritiqueAgent
+from .agents import SearchAgent, CuratorAgent, WriterAgent, DesignerAgent, EditorAgent, PublisherAgent, CritiqueAgent, TranslaterAgent
 
 
 class MasterAgent:
@@ -18,6 +18,7 @@ class MasterAgent:
         curator_agent = CuratorAgent()
         writer_agent = WriterAgent()
         critique_agent = CritiqueAgent()
+        translater_agent = TranslaterAgent()
         designer_agent = DesignerAgent(self.output_dir)
         editor_agent = EditorAgent(layout)
         publisher_agent = PublisherAgent(self.output_dir)
@@ -31,6 +32,7 @@ class MasterAgent:
         workflow.add_node("write", writer_agent.run)
         workflow.add_node("critique", critique_agent.run)
         workflow.add_node("design", designer_agent.run)
+        workflow.add_node("translater", translater_agent.run)
 
         # Set up edges
         workflow.add_edge('search', 'curate')
@@ -38,7 +40,8 @@ class MasterAgent:
         workflow.add_edge('write', 'critique')
         workflow.add_conditional_edges(start_key='critique',
                                        condition=lambda x: "accept" if x['critique'] is None else "revise",
-                                       conditional_edge_mapping={"accept": "design", "revise": "write"})
+                                       conditional_edge_mapping={"accept": "translater", "revise": "write"})
+        workflow.add_edge('translater','design')
 
         # set up start and end nodes
         workflow.set_entry_point("search")

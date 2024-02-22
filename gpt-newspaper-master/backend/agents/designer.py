@@ -2,6 +2,7 @@ import os
 import re
 
 class DesignerAgent:
+    
     def __init__(self, output_dir):
         self.output_dir = output_dir
 
@@ -15,7 +16,9 @@ class DesignerAgent:
         return html_template
 
     def designer(self, article):
+        
         html_template = self.load_html_template()
+        
         title = article["title"]
         date = article["date"]
         image = article["image"]
@@ -39,5 +42,7 @@ class DesignerAgent:
         return article
 
     def run(self, article: dict):
+        
         article = self.designer(article)
+        
         return article

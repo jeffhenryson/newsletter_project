@@ -5,6 +5,7 @@ tavily_client = TavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
 
 
 class SearchAgent:
+    
     def __init__(self):
         pass
 
